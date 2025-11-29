@@ -93,22 +93,50 @@ def create_embedding_features(text):
     }
 
 def find_relevant_chunks(query, documents, top_k=3):
-    """Find most relevant document chunks"""
-    query_words = set(query.lower().split())
+    """Find most relevant document chunks with improved matching"""
+    if not documents:
+        return []
+    
+    query_lower = query.lower()
+    query_words = set(query_lower.split())
+    
+    # Extract potential acronyms (all caps words or words in parentheses)
+    import re
+    acronyms = re.findall(r'\b[A-Z]{2,}\b', query)
     
     scored_docs = []
     for doc in documents:
         score = 0
+        doc_text = doc['chunk'].lower()
         doc_words = doc['features']['words']
+        
+        # Boost score for acronym matches
+        for acronym in acronyms:
+            # Check if acronym appears in doc
+            if acronym.lower() in doc_text:
+                score += 10
+            # Check for pattern like "Rapat Dewan Gubernur (RDG)"
+            if f"({acronym.lower()})" in doc_text or f"({acronym})" in doc['chunk']:
+                score += 15
         
         # Word overlap score
         overlap = query_words.intersection(doc_words)
         score += len(overlap) * 2
         
+        # Exact phrase match (very important)
+        if len(query) > 3 and query_lower in doc_text:
+            score += 20
+        
         # Keyword match
         for keyword in doc['features']['keywords']:
-            if keyword in query.lower():
+            if keyword in query_lower:
                 score += 3
+        
+        # Partial word matching for longer queries
+        for word in query_words:
+            if len(word) > 3:
+                if word in doc_text:
+                    score += 1
         
         if score > 0:
             scored_docs.append({
@@ -280,10 +308,11 @@ def main():
         uploaded_file = st.file_uploader(
             "Upload PDF atau TXT",
             type=['pdf', 'txt'],
-            help="Upload dokumen resmi Bank Indonesia"
+            help="Upload dokumen resmi Bank Indonesia",
+            key="file_uploader"
         )
         
-        if uploaded_file:
+        if uploaded_file and uploaded_file.name not in [doc.get('source_file', '') for doc in st.session_state.get('uploaded_files', [])]:
             with st.spinner("⏳ Memproses dokumen..."):
                 docs, error = process_document(uploaded_file, uploaded_file.name)
                 
@@ -291,12 +320,24 @@ def main():
                     st.error(f"❌ Error: {error}")
                 else:
                     st.session_state.documents.extend(docs)
+                    
+                    # Track uploaded files
+                    if 'uploaded_files' not in st.session_state:
+                        st.session_state.uploaded_files = []
+                    st.session_state.uploaded_files.append({
+                        'source_file': uploaded_file.name,
+                        'timestamp': datetime.now().isoformat()
+                    })
+                    
                     st.success(f"✅ Berhasil! {len(docs)} bagian dokumen ditambahkan")
-                    st.experimental_rerun()
+                    # Jangan rerun otomatis, biarkan user continue
         
         if st.session_state.documents:
+            st.info(f"📚 {len(set([d['filename'] for d in st.session_state.documents]))} file terproses")
             if st.button("🗑️ Hapus Semua Dokumen"):
                 st.session_state.documents = []
+                st.session_state.uploaded_files = []
+                st.success("✅ Semua dokumen dihapus")
                 st.experimental_rerun()
         
         st.markdown("---")
