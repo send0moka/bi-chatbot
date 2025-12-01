@@ -44,6 +44,8 @@ st.markdown("""
         padding: 0.75rem 1rem;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         margin: 0;
+        display: flex;
+        align-items: center;
     }
     
     /* Add padding to main content to prevent overlap with fixed header */
@@ -55,6 +57,10 @@ st.markdown("""
         margin: 0 !important;
         font-size: 1.1rem !important;
         font-weight: 500 !important;
+        display: inline-block;
+    }
+    .wa-header img {
+        display: inline-block;
     }
     
     /* Chat messages - WhatsApp Style */
@@ -565,7 +571,8 @@ def main():
     # WhatsApp-style Sticky Header
     st.markdown("""
     <div class="wa-header">
-        <h3>🏦 Bank Indonesia Chatbot</h3>
+        <img src="https://images.seeklogo.com/logo-png/62/2/bank-indonesia-logo-png_seeklogo-622136.png" alt="Bank Indonesia Logo" style="height:32px; vertical-align: middle; margin-right: 10px;"/>
+        <h3>KPw BI Purwokerto Chatbot</h3>
     </div>
     """, unsafe_allow_html=True)
     
