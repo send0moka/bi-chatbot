@@ -15,8 +15,8 @@ def load_embedding_model():
 
 # Page config
 st.set_page_config(
-    page_title="Bank Indonesia Chatbot",
-    page_icon="🏦",
+    page_title="KPw BI Purwokerto Chatbot",
+    page_icon="https://www.bi.go.id/favicon.png",
     layout="wide"
 )
 
