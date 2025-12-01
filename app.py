@@ -339,7 +339,7 @@ def load_builtin_knowledge(model=None):
         })
     return docs
 
-def chunk_text(text, chunk_size=1000, overlap=200):
+def chunk_text(text, chunk_size=2000, overlap=400):
     """Split text into overlapping chunks"""
     chunks = []
     start = 0
@@ -480,19 +480,22 @@ def chat_with_ai(user_message, relevant_docs, api_key):
         
         # Build prompt
         if context:
-            prompt = f"""Kamu adalah asisten chatbot Bank Indonesia yang membantu menjawab pertanyaan tentang Bank Indonesia.
+            prompt = f"""Kamu adalah asisten chatbot Bank Indonesia Perwakilan Purwokerto yang membantu menjawab pertanyaan.
 
+INFORMASI DARI DOKUMEN:
 {context}
 
-Pertanyaan: {user_message}
+PERTANYAAN: {user_message}
 
-Instruksi:
-- Jawab berdasarkan informasi dari dokumen di atas
-- Sebutkan dari dokumen mana informasi tersebut berasal
-- Jika informasi tidak lengkap di dokumen, tambahkan pengetahuan umum tentang Bank Indonesia
-- Berikan link ke website resmi bi.go.id jika relevan
-- Jawab dalam Bahasa Indonesia dengan ramah, profesional, dan informatif
-- Gunakan format yang jelas dengan paragraf dan bullet points jika perlu"""
+INSTRUKSI PENTING:
+- WAJIB gunakan HANYA informasi dari dokumen di atas untuk menjawab
+- Jika informasi ada di dokumen, jawab dengan detail dan lengkap dari dokumen tersebut
+- JANGAN katakan "informasi tidak tersedia" jika sudah ada di dokumen
+- Jawab dengan struktur yang jelas menggunakan bullet points dan numbering
+- Berikan informasi praktis yang bisa langsung digunakan
+- Sertakan nomor kontak, alamat, atau link yang relevan dari dokumen
+- Jawab dalam Bahasa Indonesia yang ramah dan profesional
+- Jika memang benar-benar tidak ada di dokumen, baru katakan tidak tersedia dan sarankan menghubungi kantor"""
         else:
             prompt = f"""Kamu adalah asisten chatbot Bank Indonesia yang membantu menjawab pertanyaan.
 
@@ -691,14 +694,14 @@ def main():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("🏛️ Apa itu Bank Indonesia?"):
-            st.session_state.example_query = "Apa itu Bank Indonesia?"
+        if st.button("📍 Alamat KPw BI Purwokerto"):
+            st.session_state.example_query = "Dimana alamat Kantor Perwakilan Bank Indonesia Purwokerto?"
     with col2:
-        if st.button("📊 Info Suku Bunga BI"):
-            st.session_state.example_query = "Berapa suku bunga BI terkini?"
+        if st.button("💰 Cara Penukaran Uang"):
+            st.session_state.example_query = "Bagaimana cara menukar uang di Bank Indonesia Purwokerto?"
     with col3:
-        if st.button("📞 Kontak Bank Indonesia"):
-            st.session_state.example_query = "Bagaimana cara menghubungi Bank Indonesia?"
+        if st.button("🎓 Info Magang & PKL"):
+            st.session_state.example_query = "Bagaimana cara mendaftar magang atau PKL di Bank Indonesia Purwokerto?"
     
     # User input
     user_input = st.text_input("Ketik pertanyaan Anda tentang Bank Indonesia...", key="user_input_field", value="")
@@ -728,7 +731,7 @@ def main():
             user_input,
             st.session_state.documents,
             model=embedding_model,
-            top_k=5
+            top_k=8
         )
         
         # Get AI response
