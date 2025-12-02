@@ -1,389 +1,428 @@
-# 🏦 Bank Indonesia Chatbot - Panduan Lengkap Deploy
+# 🏦 LISA Chatbot - Bank Indonesia Purwokerto
+
+<div align="center">
+  
+![Bank Indonesia](https://img.shields.io/badge/Bank%20Indonesia-KPw%20Purwokerto-blue?style=for-the-badge)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google%20Gemini%202.5-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+**LISA (Layanan Informasi Serba Ada)** - Chatbot AI untuk Kantor Perwakilan Bank Indonesia Purwokerto dengan Knowledge Base Management System yang lengkap.
+
+[🚀 Live Demo](#) • [📖 Dokumentasi](#-dokumentasi) • [🛠️ Instalasi](#-instalasi-dan-deployment)
+
+</div>
+
+---
+
+## ✨ Fitur Utama
+
+### 🤖 Chatbot Cerdas
+- **AI Google Gemini 2.5 Flash** dengan fallback models
+- **RAG (Retrieval-Augmented Generation)** - Hybrid semantic + keyword search
+- **WhatsApp-style UI** - Mobile-friendly dan responsif
+- **Multi-turn conversation** - Context-aware chat history
+
+### 📚 Knowledge Base Management
+- **Admin Dashboard** - Update KB tanpa coding (password: `bebarengan`)
+- **Version Control System** - Track perubahan dengan MD5 hashing
+- **Auto-Sync** - Scraping otomatis dari website BI resmi
+- **Export/Import** - JSON dan text format untuk integrasi
+
+### 🎨 UI/UX Modern
+- **WhatsApp-inspired design** - Familiar dan intuitif
+- **Sticky header** dengan logo Bank Indonesia
+- **Mobile-responsive** - Perfect di semua device
+- **Hamburger menu sidebar** - Clean interface
+- **Blue theme** (#2563eb) - Professional dan modern
+
+### 🔒 Keamanan
+- **API Key Management** - Streamlit Secrets integration
+- **Password-protected admin** - Secure dashboard access
+- **Environment variables** - Best security practices
+
+---
 
 ## 📋 Daftar Isi
-1. [Persiapan Awal](#persiapan-awal)
-2. [Setup Lokal](#setup-lokal)
-3. [Deploy ke Streamlit Cloud](#deploy-ke-streamlit-cloud)
-4. [Cara Pakai](#cara-pakai)
-5. [Troubleshooting](#troubleshooting)
+1. [Instalasi dan Deployment](#-instalasi-dan-deployment)
+2. [Knowledge Base Management](#-knowledge-base-management)
+3. [Dokumentasi](#-dokumentasi)
+4. [Teknologi](#-teknologi)
+5. [Troubleshooting](#-troubleshooting)
 
 ---
 
-## 🎯 Persiapan Awal
+## 🚀 Instalasi dan Deployment
 
-### 1. Install Python
-**Download Python 3.9 atau lebih baru:**
-- 🪟 Windows: https://www.python.org/downloads/
-- 🍎 Mac: Sudah terinstall, atau `brew install python`
-- 🐧 Linux: `sudo apt install python3 python3-pip`
+### Prasyarat
+- Python 3.9 atau lebih baru
+- Git
+- Google Gemini API Key (gratis di [Google AI Studio](https://ai.google.dev/))
 
-**Cek instalasi:**
+### Setup Lokal
+
+1. **Clone repository**
 ```bash
-python --version
-# atau
-python3 --version
-```
-
-Harus muncul: `Python 3.9.x` atau lebih tinggi
-
-### 2. Dapatkan Google Gemini API Key (GRATIS)
-
-**Step by step:**
-1. Buka: https://ai.google.dev/
-2. Klik **"Get API Key"** atau **"Get Started"**
-3. Login dengan akun Google
-4. Klik **"Create API Key"**
-5. Copy API Key (contoh: `AIzaSyD7_PAF98KwkGPGSHLWPmBF1GsXDAyxEA8`)
-6. **SIMPAN API KEY INI!** ⚠️
-
-> ✅ **GRATIS & NO CREDIT CARD REQUIRED**
-> - 15 requests per menit
-> - 1,500 requests per hari
-> - Cukup untuk chatbot pribadi
-
-### 3. Install Git
-**Download Git:**
-- Windows: https://git-scm.com/download/win
-- Mac: `brew install git`
-- Linux: `sudo apt install git`
-
-**Cek instalasi:**
-```bash
-git --version
-```
-
----
-
-## 💻 Setup Lokal (Test di Laptop)
-
-### Step 1: Buat Folder Project
-```bash
-# Buat folder
-mkdir bi-chatbot
+git clone https://github.com/send0moka/bi-chatbot.git
 cd bi-chatbot
 ```
 
-### Step 2: Buat File-file Project
-
-**A. Buat file `app.py`**
-- Copy semua kode dari artifact "app.py - Main Application"
-- Paste ke file `app.py`
-
-**B. Buat file `requirements.txt`**
-```
-streamlit==1.31.0
-google-generativeai==0.3.2
-PyPDF2==3.0.1
-```
-
-**C. Buat folder `.streamlit` dan file `config.toml`**
-```bash
-mkdir .streamlit
-```
-
-Isi file `.streamlit/config.toml`:
-```toml
-[theme]
-primaryColor="#667eea"
-backgroundColor="#FFFFFF"
-secondaryBackgroundColor="#f0f2f6"
-textColor="#262730"
-font="sans serif"
-
-[server]
-headless = true
-port = 8501
-enableCORS = false
-enableXsrfProtection = true
-```
-
-### Step 3: Install Dependencies
+2. **Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-> ⚠️ Jika error, coba: `pip3 install -r requirements.txt`
+3. **Setup API Key**
 
-### Step 4: Jalankan Aplikasi Lokal
+Buat file `.streamlit/secrets.toml`:
+```toml
+GEMINI_API_KEY = "your-api-key-here"
+```
+
+4. **Jalankan aplikasi**
 ```bash
+# Main chatbot
 streamlit run app.py
+
+# Admin dashboard
+streamlit run admin_dashboard.py --server.port 8502
 ```
 
-Browser akan otomatis terbuka di `http://localhost:8501`
+### Deploy ke Streamlit Cloud
 
-**🎉 KALAU BERHASIL:**
-- Aplikasi muncul di browser
-- Ada sidebar dengan input API key
-- Bisa upload dokumen
-- Bisa chat
-
----
-
-## 🚀 Deploy ke Streamlit Cloud (GRATIS SELAMANYA)
-
-### Step 1: Buat Akun GitHub (Jika Belum Punya)
-1. Buka: https://github.com/
-2. Klik **"Sign Up"**
-3. Ikuti instruksi (gratis)
-
-### Step 2: Upload Project ke GitHub
-
-**A. Init Git di folder project:**
-```bash
-cd bi-chatbot
-git init
-```
-
-**B. Buat file `.gitignore`:**
-```
-__pycache__/
-*.pyc
-.streamlit/secrets.toml
-*.pdf
-*.txt
-```
-
-**C. Commit semua file:**
+1. **Push ke GitHub**
 ```bash
 git add .
-git commit -m "Initial commit - BI Chatbot"
+git commit -m "Initial deployment"
+git push origin main
 ```
 
-**D. Buat Repository di GitHub:**
-1. Login ke GitHub
-2. Klik ikon **"+"** di pojok kanan atas
-3. Pilih **"New repository"**
-4. Nama repository: `bi-chatbot`
-5. Set ke **Public**
-6. **JANGAN** centang "Initialize with README"
-7. Klik **"Create repository"**
+2. **Deploy di Streamlit Cloud**
+- Buka [share.streamlit.io](https://share.streamlit.io)
+- Connect GitHub repository
+- Set `app.py` sebagai main file
+- Tambahkan `GEMINI_API_KEY` di Secrets
 
-**E. Push ke GitHub:**
+3. **Deploy Admin Dashboard (Opsional)**
+- Ulangi langkah 2 dengan `admin_dashboard.py`
+- Port akan otomatis diatur
+
+📖 **Panduan lengkap:** Lihat [DEPLOYMENT.md](DEPLOYMENT.md)
+
+---
+
+## 📚 Knowledge Base Management
+
+### Admin Dashboard Features
+
+**Akses:** `streamlit run admin_dashboard.py --server.port 8502`  
+**Password:** `bebarengan`
+
+#### 1. 📝 Edit Knowledge Base
+- Tambah/Edit/Hapus sections
+- Real-time preview
+- Auto-save dengan commit message
+
+#### 2. 🕐 Version History
+- Track semua perubahan
+- Restore ke versi sebelumnya
+- View diff antar versions
+- Timestamp dan commit messages
+
+#### 3. 🔄 Auto-Sync
+- Scraping otomatis dari website BI
+- Konfigurasi URL dan selectors
+- Schedule sync (manual trigger atau cron)
+- Merge strategi: replace atau append
+
+#### 4. 📤 Export & Integration
+- Export ke text format (untuk app.py)
+- Export JSON (untuk backup/transfer)
+- Import dari external sources
+
+### Migrasi Knowledge Base
+
+Jika punya hardcoded KB di `app.py`, gunakan migration script:
+
 ```bash
-# Ganti YOUR_USERNAME dengan username GitHub Anda
-git remote add origin https://github.com/YOUR_USERNAME/bi-chatbot.git
-git branch -M main
-git push -u origin main
+python migrate_knowledge.py
 ```
 
-> Akan diminta username & password GitHub
+Script akan:
+- Extract KB dari `app.py`
+- Convert ke JSON format
+- Buat initial version dengan commit
+- Backup original file
 
-### Step 3: Deploy ke Streamlit Cloud
+📖 **Panduan lengkap:** Lihat [ADMIN_README.md](ADMIN_README.md) dan [QUICKSTART.md](QUICKSTART.md)
 
-**A. Buat Akun Streamlit Cloud:**
-1. Buka: https://streamlit.io/cloud
-2. Klik **"Sign up"**
-3. Login dengan akun **GitHub** (yang tadi dibuat)
-4. Authorize Streamlit
+---
 
-**B. Deploy Aplikasi:**
-1. Klik **"New app"**
-2. Pilih:
-   - **Repository:** `YOUR_USERNAME/bi-chatbot`
-   - **Branch:** `main`
-   - **Main file path:** `app.py`
-3. Klik **"Deploy!"**
+## 📖 Dokumentasi
 
-**C. Tunggu Deploy (2-3 menit)**
-- Status akan berubah dari "Building" ke "Running"
-- URL akan muncul: `https://YOUR_APP.streamlit.app`
+| File | Deskripsi |
+|------|-----------|
+| [ADMIN_README.md](ADMIN_README.md) | Panduan lengkap admin dashboard (200+ baris) |
+| [QUICKSTART.md](QUICKSTART.md) | Quick start guide untuk KB management |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | Panduan deployment production |
+| [API_KEY_SETUP.md](API_KEY_SETUP.md) | Security guide untuk API key |
 
-### Step 4: Tambahkan API Key (AMAN)
+---
 
-**Opsi 1: User Input API Key (Recommended)**
-- User memasukkan API key mereka sendiri di sidebar
-- Tidak perlu config tambahan
-- Setiap user pakai API key sendiri
+## 🛠️ Teknologi
 
-**Opsi 2: Simpan API Key di Secrets (Admin Only)**
-1. Di Streamlit Cloud, buka app Anda
-2. Klik **⚙️ Settings** → **Secrets**
-3. Tambahkan:
-```toml
-GOOGLE_API_KEY = "AIzaSyD7_PAF98KwkGPGSHLWPmBF1GsXDAyxEA8"
-```
-4. Save
+### Core Stack
+- **Frontend:** Streamlit 1.31.0+
+- **AI:** Google Gemini 2.5 Flash (with fallback models)
+- **Embeddings:** Sentence-Transformers (all-MiniLM-L6-v2)
+- **Web Scraping:** BeautifulSoup4 + lxml
 
-Lalu ubah kode di `app.py`:
+### RAG Configuration
 ```python
-# Tambahkan di bagian atas main()
-if 'api_key' not in st.session_state:
-    st.session_state.api_key = st.secrets.get("GOOGLE_API_KEY", "")
+chunk_size = 2000        # characters
+overlap = 400            # characters
+top_k = 8               # relevant chunks
+semantic_weight = 0.7    # hybrid search
+keyword_weight = 0.3     # hybrid search
+```
+
+### Fallback Models
+1. `gemini-2.0-flash-exp`
+2. `gemini-2.5-flash-lite`
+3. `gemini-2.0-flash-lite`
+
+---
+
+## 📊 Struktur Project
+
+```
+bi-chatbot/
+│
+├── app.py                          # Main chatbot application (660 lines)
+├── admin_dashboard.py              # Admin interface (450+ lines)
+├── migrate_knowledge.py            # Migration script
+├── sync_scheduler.py               # Auto-sync scheduler
+├── requirements.txt                # Python dependencies
+│
+├── knowledge_base/                 # KB storage
+│   ├── current_knowledge.json      # Active KB (7 sections)
+│   ├── versions.json               # Version index
+│   ├── sync_config.json            # Auto-sync config
+│   └── version_*.json              # Version snapshots
+│
+├── .streamlit/
+│   ├── config.toml                 # Streamlit config
+│   └── secrets.toml                # API keys (gitignored)
+│
+└── docs/
+    ├── ADMIN_README.md             # Admin documentation
+    ├── QUICKSTART.md               # Quick start guide
+    ├── DEPLOYMENT.md               # Deployment guide
+    └── API_KEY_SETUP.md            # Security guide
 ```
 
 ---
 
-## 🎮 Cara Pakai Chatbot
+## 🎯 Cara Pakai
 
-### 1. Buka Aplikasi
-- Lokal: `http://localhost:8501`
-- Online: `https://YOUR_APP.streamlit.app`
+### User Interface
 
-### 2. Masukkan API Key
-- Di sidebar, paste API key Gemini Anda
-- Klik enter atau klik di luar input box
+1. **Buka chatbot** - URL production atau localhost:8501
+2. **Lihat example questions** - Button di bawah chat input
+3. **Chat dengan LISA** - Tanya tentang BI Purwokerto
+4. **Mobile-friendly** - Gunakan di HP untuk WhatsApp-like experience
 
-### 3. Upload Dokumen (Opsional)
-**Download dokumen resmi BI:**
-- [Publikasi BI](https://www.bi.go.id/id/publikasi/laporan/Default.aspx)
-- [Statistik BI](https://www.bi.go.id/id/statistik/Default.aspx)
+### Knowledge Base Update
 
-**Upload:**
-- Klik **"Upload PDF atau TXT"**
-- Pilih file PDF/TXT dari komputer
-- Tunggu proses (beberapa detik)
-- Dokumen otomatis tersimpan
+1. **Akses admin dashboard** - localhost:8502 atau admin URL
+2. **Login** dengan password `bebarengan`
+3. **Edit KB** di tab "Edit Knowledge Base"
+4. **Save** dengan commit message
+5. **Auto-sync** - Chatbot langsung pakai KB terbaru
 
-### 4. Mulai Chat!
-**Contoh pertanyaan:**
+### Contoh Pertanyaan
+
+**Informasi Umum:**
 - "Apa itu Bank Indonesia?"
-- "Berapa suku bunga BI rate saat ini?"
-- "Apa tugas utama Bank Indonesia?"
-- "Bagaimana cara menghubungi BI?"
-- "Jelaskan tentang inflasi di Indonesia"
+- "Dimana alamat KPw BI Purwokerto?"
+- "Bagaimana cara menghubungi BI Purwokerto?"
 
-**Jika sudah upload dokumen:**
-- Chatbot akan jawab berdasarkan dokumen
-- Akan tampil sumber dokumen di bawah jawaban
+**Layanan:**
+- "Bagaimana cara penukaran uang?"
+- "Apa itu kas keliling?"
+- "Bagaimana cara magang di BI?"
+
+**Wilayah Kerja:**
+- "Apa saja kabupaten yang dilayani KPw BI Purwokerto?"
+- "Berapa jumlah penduduk di wilayah kerja?"
 
 ---
 
 ## 🔧 Troubleshooting
 
-### ❌ Error: "No module named 'streamlit'"
-**Solusi:**
+### ❌ Chatbot Error
+
+**"No API key found"**
 ```bash
-pip install streamlit
-# atau
-pip3 install streamlit
+# Cek file .streamlit/secrets.toml
+# Pastikan format: GEMINI_API_KEY = "your-key"
 ```
 
-### ❌ Error: "API Key not valid"
-**Solusi:**
-- Cek API key sudah benar
-- Pastikan tidak ada spasi di awal/akhir
-- Generate API key baru di https://ai.google.dev/
-
-### ❌ Error: "Rate limit exceeded"
-**Solusi:**
+**"Rate limit exceeded"**
 - Tunggu 1 menit (limit: 15 requests/menit)
-- Atau generate API key baru
+- Atau gunakan API key baru
 
-### ❌ Error saat upload PDF: "Cannot extract text"
-**Solusi:**
-- Pastikan PDF bukan scan/gambar
-- Convert PDF scan ke text dulu
-- Atau pakai file TXT
+**"Information not available"**
+- Update knowledge base di admin dashboard
+- Cek KB sections sudah lengkap
+- Verify chunk size dan top_k settings
 
-### ❌ Deploy gagal di Streamlit Cloud
-**Solusi:**
-1. Cek `requirements.txt` sudah benar
-2. Pastikan semua file sudah di-push ke GitHub:
+### ❌ Admin Dashboard Error
+
+**"Cannot connect"**
+- Pastikan port 8502 tidak dipakai
+- Coba port lain: `streamlit run admin_dashboard.py --server.port 8503`
+
+**"Version restore failed"**
+- Cek file version_*.json masih ada
+- Restore dari backup jika perlu
+
+**"Sync failed"**
+- Verify URL website masih aktif
+- Cek CSS selectors masih valid
+- Lihat error di terminal
+
+### ❌ Deployment Error
+
+**"ModuleNotFoundError"**
 ```bash
-git status
-git add .
-git commit -m "fix"
+# Update requirements.txt
+pip freeze > requirements.txt
+git add requirements.txt
+git commit -m "fix: update dependencies"
 git push
 ```
-3. Di Streamlit Cloud, klik **"Reboot app"**
 
-### ❌ Aplikasi lambat / hanging
-**Solusi:**
-- Hapus dokumen yang tidak perlu (tombol "Hapus Semua Dokumen")
-- Refresh browser
-- Clear cache Streamlit:
-```bash
-streamlit cache clear
-```
+**"App not loading"**
+- Klik "Reboot app" di Streamlit Cloud
+- Cek logs untuk error details
+- Verify secrets sudah di-set
 
----
+### ❌ Logo/UI Issues
 
-## 📊 Struktur File Final
+**"Logo not displaying"**
+- Logo sudah inline SVG (no CORS)
+- Clear browser cache
+- Check console for errors
 
-```
-bi-chatbot/
-│
-├── app.py                      # Aplikasi utama
-├── requirements.txt            # Dependencies
-├── .gitignore                  # File yang diabaikan Git
-├── README.md                   # (opsional)
-│
-└── .streamlit/
-    └── config.toml            # Konfigurasi Streamlit
-```
+**"Mobile view broken"**
+- Refresh page
+- Clear cookies
+- Try different browser
 
 ---
 
-## 🎓 Tips & Trik
+## 🔐 Security Best Practices
 
-### 1. **Untuk Jawaban Lebih Akurat:**
-- Upload dokumen resmi BI (PDF)
-- Upload beberapa dokumen berbeda
-- Dokumen lebih baru = jawaban lebih akurat
+1. **API Keys**
+   - Never commit `.streamlit/secrets.toml` to Git
+   - Use environment variables in production
+   - Rotate keys regularly
 
-### 2. **Hemat API Quota:**
-- Gunakan pertanyaan yang jelas
-- Hindari pertanyaan yang sama berulang-ulang
-- API key gratis: 1,500 requests/hari (cukup!)
+2. **Admin Access**
+   - Change default password `bebarengan`
+   - Use strong passwords (16+ characters)
+   - Enable 2FA untuk GitHub/Streamlit accounts
 
-### 3. **Share dengan Orang Lain:**
-- Share URL Streamlit Cloud
-- Mereka bisa pakai tanpa install apa-apa
-- Setiap user pakai API key sendiri (aman)
-
-### 4. **Update Aplikasi:**
-```bash
-# Edit file app.py
-git add .
-git commit -m "update fitur baru"
-git push
-# Streamlit Cloud otomatis update!
-```
+3. **Version Control**
+   - Commit dengan meaningful messages
+   - Review changes before pushing
+   - Backup KB versions regularly
 
 ---
 
-## 🆘 Butuh Bantuan?
+## 🤝 Contributing
 
-**Kontak:**
-- 📧 Email support Streamlit: support@streamlit.io
-- 📚 Dokumentasi: https://docs.streamlit.io
-- 💬 Forum: https://discuss.streamlit.io
+Contributions welcome! Please:
+1. Fork repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
-**Link Berguna:**
-- 🔑 Google AI Studio: https://ai.google.dev/
-- 🐙 GitHub Docs: https://docs.github.com/
-- 🚀 Streamlit Cloud: https://streamlit.io/cloud
-
----
-
-## ✅ Checklist Deploy
-
-- [ ] Python 3.9+ terinstall
-- [ ] Git terinstall
-- [ ] Google Gemini API Key sudah didapat
-- [ ] File `app.py` sudah dibuat
-- [ ] File `requirements.txt` sudah dibuat
-- [ ] Folder `.streamlit/config.toml` sudah dibuat
-- [ ] Test lokal berhasil (`streamlit run app.py`)
-- [ ] Akun GitHub sudah dibuat
-- [ ] Project sudah di-push ke GitHub
-- [ ] Akun Streamlit Cloud sudah dibuat
-- [ ] Aplikasi sudah di-deploy
-- [ ] Test online berhasil
-- [ ] API Key sudah di-input
-- [ ] Upload dokumen test berhasil
-- [ ] Chat test berhasil
+**Commit Convention:**
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `docs:` - Documentation updates
+- `style:` - Code formatting
+- `refactor:` - Code restructuring
+- `test:` - Adding tests
+- `chore:` - Maintenance tasks
 
 ---
 
-## 🎉 SELAMAT!
+## 📝 Changelog
 
-Chatbot Bank Indonesia Anda sudah online dan bisa dipakai!
+### v1.2.0 (2025-12-02)
+- ✨ Official Bank Indonesia SVG logo (inline, no CORS)
+- 🔒 Secure API key management (Streamlit Secrets)
+- 📚 Knowledge Base Management System
+- 🔄 Version control with MD5 hashing
+- 🌐 Auto-sync from BI website
+- 📤 Export/Import functionality
+- 📖 Comprehensive documentation (4 guides)
 
-**URL Aplikasi:** `https://YOUR_APP.streamlit.app`
+### v1.1.0 (2025-11-28)
+- 🎨 WhatsApp-style mobile UI
+- 🔵 Blue theme (#2563eb)
+- 📱 Mobile-responsive design
+- 🍔 Hamburger menu sidebar
+- ⚡ RAG optimization (chunk 2000, overlap 400, top-k 8)
 
-**Share ke teman/kolega dan mulai pakai! 🚀**
+### v1.0.0 (2025-11-25)
+- 🚀 Initial release
+- 🤖 Google Gemini 2.5 Flash integration
+- 📚 Hardcoded knowledge base
+- 💬 Basic chat functionality
 
 ---
 
-*Dibuat dengan ❤️ menggunakan Streamlit & Google Gemini*
+## 📜 License
+
+MIT License - see [LICENSE](LICENSE) for details
+
+---
+
+## 👥 Team
+
+**Developed by:** send0moka  
+**Organization:** Bank Indonesia - KPw Purwokerto  
+**Contact:** [GitHub](https://github.com/send0moka)
+
+---
+
+## 🙏 Acknowledgments
+
+- **Streamlit** - Amazing framework untuk web apps
+- **Google Gemini** - Powerful AI model
+- **Sentence Transformers** - Excellent embeddings
+- **BeautifulSoup** - Reliable web scraping
+- **Bank Indonesia** - Logo dan knowledge base
+
+---
+
+## ⭐ Star History
+
+Jika project ini bermanfaat, kasih ⭐ di GitHub!
+
+---
+
+<div align="center">
+
+**[⬆ Kembali ke atas](#-lisa-chatbot---bank-indonesia-purwokerto)**
+
+Made with ❤️ using Streamlit & Google Gemini
+
+© 2025 Bank Indonesia Purwokerto
+
+</div>
