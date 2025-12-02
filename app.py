@@ -104,8 +104,33 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Load Knowledge Base from JSON if available
+def load_knowledge_from_json():
+    """Load knowledge base from JSON file if exists"""
+    kb_file = "knowledge_base/current_knowledge.json"
+    if os.path.exists(kb_file):
+        try:
+            with open(kb_file, 'r', encoding='utf-8') as f:
+                kb_data = json.load(f)
+            
+            # Convert JSON to text format
+            text_content = "INFORMASI BANK INDONESIA KANTOR PERWAKILAN PURWOKERTO\n\n"
+            for section in kb_data.get("sections", []):
+                text_content += "=" * 47 + "\n"
+                text_content += section.get("title", "").upper() + "\n"
+                text_content += "=" * 47 + "\n\n"
+                text_content += section.get("content", "") + "\n\n"
+            
+            return text_content
+        except Exception as e:
+            st.warning(f"⚠️ Error loading knowledge base from JSON: {e}")
+            return None
+    return None
+
 # Built-in Knowledge Base - Bank Indonesia Perwakilan Purwokerto
-BUILTIN_KNOWLEDGE = """
+# Try to load from JSON first, fallback to hardcoded
+_kb_from_json = load_knowledge_from_json()
+BUILTIN_KNOWLEDGE = _kb_from_json if _kb_from_json else """
 INFORMASI BANK INDONESIA KANTOR PERWAKILAN PURWOKERTO
 
 ===============================================
