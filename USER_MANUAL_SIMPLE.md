@@ -63,7 +63,7 @@
 **Klik di sini:** https://bichatbot-jehian-adm.streamlit.app
 
 ### 🔐 Login
-- **Password:** `bebarengan`
+- **Password:** Hubungi admin untuk mendapatkan password
 - Masukkan password lalu klik Enter
 
 ### 📚 Cara Update Knowledge Base
@@ -122,7 +122,7 @@
 - Coba pertanyaan lain yang lebih jelas
 
 ### ❌ "Admin dashboard tidak bisa login"
-- Pastikan password benar: `bebarengan`
+- Pastikan password benar (hubungi admin jika lupa)
 - Tidak ada spasi di awal/akhir
 - Coba refresh halaman
 

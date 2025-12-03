@@ -3,11 +3,11 @@
 ## Prerequisites
 - GitHub repository (already created: send0moka/bi-chatbot)
 - Streamlit Cloud account (https://streamlit.io/cloud)
-- Admin password: 'bebarengan'
+- Admin password configured in secrets (see step 4)
 
 ## Files Ready for Deployment
 ✅ app.py - Main chatbot application
-✅ admin_dashboard.py - Admin dashboard with password 'bebarengan'
+✅ admin_dashboard.py - Admin dashboard (password-protected)
 ✅ requirements.txt - All dependencies
 ✅ .streamlit/config.toml - Theme configuration
 ✅ knowledge_base/ - KB storage with version control
@@ -53,27 +53,31 @@ git push origin main
 **Admin dashboard will be live at:**
 `https://[your-admin-name].streamlit.app`
 
-### 4. Configure Secrets (Optional)
+### 4. Configure Secrets (REQUIRED for Admin)
 
-For better security, use Streamlit secrets:
+⚠️ **IMPORTANT**: Admin dashboard requires password in secrets
 
 1. In Streamlit Cloud dashboard, select your admin app
 2. Click "Settings" → "Secrets"
 3. Add:
    ```toml
-   ADMIN_PASSWORD = "bebarengan"
+   ADMIN_PASSWORD = "your-secure-password-here"
+   GEMINI_API_KEY = "your-gemini-api-key-here"
    ```
-4. Update `admin_dashboard.py` to use:
-   ```python
-   import streamlit as st
-   ADMIN_PASSWORD = st.secrets.get("ADMIN_PASSWORD", "bebarengan")
-   ```
+4. Admin dashboard will automatically load from secrets
+
+**Security Best Practices:**
+- Use strong password (16+ characters)
+- Never commit passwords to repository
+- Use different passwords for prod/dev
+- Rotate passwords regularly
 
 ## Post-Deployment Checklist
 
+- [ ] Configure secrets (ADMIN_PASSWORD and GEMINI_API_KEY)
 - [ ] Test main chatbot URL
 - [ ] Test admin dashboard URL
-- [ ] Login to admin with password 'bebarengan'
+- [ ] Login to admin with configured password
 - [ ] Edit a section in KB
 - [ ] Verify changes reflect in chatbot (may need restart)
 - [ ] Test all example questions
@@ -92,15 +96,17 @@ After deployment, you'll have:
 
 2. **Admin Dashboard**: `https://[admin-name].streamlit.app`
    - For admin only
-   - Password protected: 'bebarengan'
+   - Password protected (configured in secrets)
    - Edit KB, version control, auto-sync
 
 ## Security Notes
 
-✅ Admin password changed to 'bebarengan'
+✅ Admin password configured in Streamlit Secrets
 ✅ .gitignore configured to exclude sensitive files
-⚠️ Consider using Streamlit Secrets for production
+✅ No hardcoded credentials in repository
+⚠️ Use strong passwords (16+ characters, mix of letters/numbers/symbols)
 ⚠️ Restrict admin dashboard access via IP if possible
+⚠️ Rotate API keys and passwords regularly
 
 ## Monitoring & Maintenance
 
@@ -111,7 +117,7 @@ After deployment, you'll have:
 
 ### Update Knowledge Base
 1. Go to admin dashboard
-2. Login with 'bebarengan'
+2. Login with your configured password
 3. Edit knowledge base
 4. Changes auto-saved with versioning
 5. Restart main chatbot if needed (via Streamlit Cloud)

@@ -319,7 +319,8 @@ if 'messages' not in st.session_state:
 if 'documents' not in st.session_state:
     st.session_state.documents = []
 if 'api_key' not in st.session_state:
-    st.session_state.api_key = 'AIzaSyD7_PAF98KwkGPGSHLWPmBF1GsXDAyxEA8'
+    # Load from secrets or environment, fallback to empty
+    st.session_state.api_key = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
 if 'builtin_loaded' not in st.session_state:
     st.session_state.builtin_loaded = False
 

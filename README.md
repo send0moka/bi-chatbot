@@ -24,7 +24,7 @@
 - **Multi-turn conversation** - Context-aware chat history
 
 ### 📚 Knowledge Base Management
-- **Admin Dashboard** - Update KB tanpa coding (password: `bebarengan`)
+- **Admin Dashboard** - Update KB tanpa coding (password-protected)
 - **Version Control System** - Track perubahan dengan MD5 hashing
 - **Auto-Sync** - Scraping otomatis dari website BI resmi
 - **Export/Import** - JSON dan text format untuk integrasi
@@ -116,7 +116,7 @@ git push origin main
 ### Admin Dashboard Features
 
 **Akses:** `streamlit run admin_dashboard.py --server.port 8502`  
-**Password:** `bebarengan`
+**Password:** Contact admin untuk credentials
 
 #### 1. 📝 Edit Knowledge Base
 - Tambah/Edit/Hapus sections
@@ -235,7 +235,7 @@ bi-chatbot/
 ### Knowledge Base Update
 
 1. **Akses admin dashboard** - localhost:8502 atau admin URL
-2. **Login** dengan password `bebarengan`
+2. **Login** dengan password admin
 3. **Edit KB** di tab "Edit Knowledge Base"
 4. **Save** dengan commit message
 5. **Auto-sync** - Chatbot langsung pakai KB terbaru
@@ -330,9 +330,10 @@ git push
    - Rotate keys regularly
 
 2. **Admin Access**
-   - Change default password `bebarengan`
-   - Use strong passwords (16+ characters)
+   - Set strong admin password in secrets/environment
+   - Use passwords with 16+ characters
    - Enable 2FA untuk GitHub/Streamlit accounts
+   - Never commit passwords to repository
 
 3. **Version Control**
    - Commit dengan meaningful messages

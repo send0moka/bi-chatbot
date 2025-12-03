@@ -28,8 +28,8 @@ if 'authenticated' not in st.session_state:
 if 'edit_mode' not in st.session_state:
     st.session_state.edit_mode = False
 
-# Authentication
-ADMIN_PASSWORD = "bebarengan"
+# Authentication - Load from secrets or environment variable
+ADMIN_PASSWORD = st.secrets.get("ADMIN_PASSWORD", os.getenv("ADMIN_PASSWORD", "change-this-password"))
 
 def authenticate():
     """Simple authentication for admin access"""

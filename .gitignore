@@ -23,8 +23,14 @@ wheels/
 .installed.cfg
 *.egg
 
-# Streamlit
+# Streamlit secrets (NEVER commit!)
 .streamlit/secrets.toml
+secrets.toml
+
+# Environment variables
+.env
+.env.local
+.env.production
 
 # Knowledge Base (include in git but can be excluded if needed)
 # knowledge_base/*.json
@@ -50,6 +56,18 @@ Thumbs.db
 *.backup
 backup_kb_*.tar.gz
 
-# Sensitive
+# Sensitive files and credentials
 .env
+.env.local
+.env.production
 secrets.toml
+*.key
+*.pem
+credentials.json
+config_private.json
+
+# API Keys and tokens
+*api_key*
+*token*
+*secret*
+*.credentials

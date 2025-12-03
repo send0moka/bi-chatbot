@@ -1,7 +1,8 @@
 import requests
+import os
 
-# Ganti dengan API key Anda
-API_KEY = "AIzaSyD7_PAF98KwkGPGSHLWPmBF1GsXDAyxEA8"
+# Load API key from environment variable
+API_KEY = os.getenv("GEMINI_API_KEY", "your-api-key-here")
 
 # Cek model yang tersedia
 url = f"https://generativelanguage.googleapis.com/v1/models?key={API_KEY}"
