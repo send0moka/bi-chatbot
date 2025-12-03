@@ -61,8 +61,8 @@ def load_knowledge_base():
     }
 
 def save_knowledge_base(kb_data, commit_message=""):
-    """Save knowledge base with versioning and auto-commit to Git"""
-    import subprocess
+    """Save knowledge base with versioning and auto-commit via GitHub API"""
+    import base64
     
     # Generate version hash
     content_hash = hashlib.md5(json.dumps(kb_data, sort_keys=True).encode()).hexdigest()[:8]
@@ -80,7 +80,7 @@ def save_knowledge_base(kb_data, commit_message=""):
         "data": kb_data
     }
     
-    # Save version
+    # Save version locally
     version_file = os.path.join(KNOWLEDGE_BASE_DIR, f"version_{version_number}_{content_hash}.json")
     with open(version_file, 'w', encoding='utf-8') as f:
         json.dump(version_data, f, indent=2, ensure_ascii=False)
@@ -104,20 +104,64 @@ def save_knowledge_base(kb_data, commit_message=""):
     with open(CURRENT_KB_FILE, 'w', encoding='utf-8') as f:
         json.dump(kb_data, f, indent=2, ensure_ascii=False)
     
-    # Auto-commit to Git (if in Git repository)
-    try:
-        # Check if we're in a git repository
-        subprocess.run(['git', 'rev-parse', '--git-dir'], 
-                      capture_output=True, check=True, timeout=5)
-        
-        # Add files
-        subprocess.run(['git', 'add', 'knowledge_base/'], 
-                      capture_output=True, timeout=5)
-        
-        # Commit with message
-        git_commit_msg = f"chore(kb): {commit_message}" if commit_message else f"chore(kb): Update KB v{version_data['version']}"
-        subprocess.run(['git', 'commit', '-m', git_commit_msg], 
-                      capture_output=True, timeout=5)
+    # Auto-commit to GitHub via API
+    github_token = st.secrets.get("GITHUB_TOKEN", os.getenv("GITHUB_TOKEN"))
+    if github_token:
+        try:
+            repo_owner = "bankindonesiapwt"
+            repo_name = "pitutur-wicara"
+            branch = "main"
+            
+            headers = {
+                "Authorization": f"token {github_token}",
+                "Accept": "application/vnd.github.v3+json"
+            }
+            
+            # Commit current_knowledge.json
+            file_path = "knowledge_base/current_knowledge.json"
+            git_commit_msg = f"chore(kb): {commit_message}" if commit_message else f"chore(kb): Update KB v{version_data['version']}"
+            
+            # Get current file SHA
+            get_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{file_path}"
+            get_response = requests.get(get_url, headers=headers, timeout=10)
+            
+            if get_response.status_code == 200:
+                current_sha = get_response.json()["sha"]
+            else:
+                current_sha = None
+            
+            # Encode content to base64
+            with open(CURRENT_KB_FILE, 'r', encoding='utf-8') as f:
+                content = f.read()
+            content_bytes = content.encode('utf-8')
+            content_base64 = base64.b64encode(content_bytes).decode('utf-8')
+            
+            # Commit file
+            commit_data = {
+                "message": git_commit_msg,
+                "content": content_base64,
+                "branch": branch
+            }
+            if current_sha:
+                commit_data["sha"] = current_sha
+            
+            put_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{file_path}"
+            put_response = requests.put(put_url, headers=headers, json=commit_data, timeout=30)
+            
+            if put_response.status_code in [200, 201]:
+                st.success("✅ Changes saved and automatically pushed to GitHub!")
+                return version_data["version"]
+            else:
+                st.warning(f"⚠️ Changes saved locally, but GitHub push failed: {put_response.status_code}")
+                
+        except requests.exceptions.Timeout:
+            st.warning("⚠️ GitHub API timeout - changes saved locally")
+        except Exception as e:
+            st.warning(f"⚠️ Changes saved locally, but GitHub push failed: {str(e)}")
+    else:
+        st.info("ℹ️ Changes saved locally. Add GITHUB_TOKEN to Streamlit Secrets to enable auto-push to GitHub.")
+    
+    return version_data["version"]
         
         # Push to remote
         subprocess.run(['git', 'push', 'origin', 'main'], 

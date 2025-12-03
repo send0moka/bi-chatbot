@@ -104,7 +104,10 @@ git push origin main
 - Buka [share.streamlit.io](https://share.streamlit.io)
 - Connect GitHub repository
 - Set `app.py` sebagai main file
-- Tambahkan `GEMINI_API_KEY` di Secrets
+- Tambahkan secrets di App settings:
+  - `GEMINI_API_KEY` - Google Gemini API key
+  - `ADMIN_PASSWORD` - Password untuk admin dashboard
+  - `GITHUB_TOKEN` - Personal access token untuk auto-commit (khusus admin dashboard)
 
 3. **Deploy Admin Dashboard (Opsional)**
 - Ulangi langkah 2 dengan `admin_dashboard.py`
@@ -125,6 +128,7 @@ git push origin main
 - Tambah/Edit/Hapus sections
 - Real-time preview
 - Auto-save dengan commit message
+- **Auto-commit ke GitHub** - Changes automatically pushed (requires GITHUB_TOKEN)
 
 #### 2. 🕐 Version History
 - Track semua perubahan
@@ -156,6 +160,37 @@ Script akan:
 - Convert ke JSON format
 - Buat initial version dengan commit
 - Backup original file
+
+### Setup GitHub Token (untuk Admin Dashboard)
+
+Agar admin panel bisa auto-commit changes ke GitHub:
+
+1. **Generate Personal Access Token**
+   - Buka https://github.com/settings/tokens
+   - Click "Generate new token" → "Generate new token (classic)"
+   - Set note: "PITUTUR-Wicara Admin Dashboard"
+   - Expiration: No expiration (atau sesuai kebutuhan)
+   - **Select scopes:** ✅ repo (full control of repositories)
+   - Click "Generate token"
+   - **COPY TOKEN** - Tidak akan ditampilkan lagi!
+
+2. **Add to Streamlit Secrets**
+   - **Local:** Edit `.streamlit/secrets.toml`:
+     ```toml
+     GITHUB_TOKEN = "ghp_your_token_here"
+     ```
+   - **Streamlit Cloud:** App settings → Secrets → Add:
+     ```toml
+     GITHUB_TOKEN = "ghp_your_token_here"
+     ```
+
+3. **Verify**
+   - Edit KB di admin dashboard
+   - Save dengan commit message
+   - Cek GitHub repository - commit baru harus muncul otomatis
+   - Chatbot akan auto-reload KB dalam 5 menit
+
+⚠️ **Penting:** Jangan commit `secrets.toml` ke Git! File ini sudah ada di `.gitignore`.
 
 📖 **Panduan lengkap:** Lihat [ADMIN_README.md](ADMIN_README.md) dan [QUICKSTART.md](QUICKSTART.md)
 
