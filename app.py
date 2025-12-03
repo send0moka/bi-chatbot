@@ -612,6 +612,8 @@ def main():
     col1, col2 = st.columns(2)
     
     with col1:
+        if st.button("🤖 Apa itu PITUTUR-Wicara?"):
+            st.session_state.example_query = "Apa itu PITUTUR-Wicara dan bagaimana cara menggunakannya?"
         if st.button("🏛️ Tentang Bank Indonesia"):
             st.session_state.example_query = "Apa itu Bank Indonesia?"
         if st.button("📍 Informasi Kantor Perwakilan Bank Indonesia Purwokerto"):
