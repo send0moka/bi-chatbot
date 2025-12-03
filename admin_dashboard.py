@@ -232,12 +232,22 @@ def main():
         
         kb_data = load_knowledge_base()
         
-        col1, col2 = st.columns([3, 1])
+        col1, col2, col3 = st.columns([3, 1, 1])
         with col1:
             st.info(f"📌 Current Version: {kb_data.get('version', 'N/A')} | Last Updated: {kb_data.get('last_updated', 'Never')}")
         with col2:
             if st.button("➕ Add New Section"):
                 st.session_state.edit_mode = True
+        with col3:
+            # Download current knowledge base
+            kb_json = json.dumps(kb_data, indent=2, ensure_ascii=False)
+            st.download_button(
+                label="📥 Download KB",
+                data=kb_json,
+                file_name="current_knowledge.json",
+                mime="application/json",
+                help="Download knowledge base untuk commit manual ke GitHub"
+            )
         
         st.markdown("---")
         
@@ -263,6 +273,7 @@ def main():
                             
                             version = save_knowledge_base(kb_data, f"Added section: {new_title}")
                             st.success(f"✅ Section saved! Version: {version}")
+                            st.warning("⚠️ Git auto-push tidak tersedia di Streamlit Cloud. Silakan download file dan commit manual ke GitHub.")
                             st.session_state.edit_mode = False
                             st.rerun()
                         else:
