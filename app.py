@@ -106,6 +106,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Load Knowledge Base from JSON if available
+@st.cache_data(ttl=300)  # Cache for 5 minutes, then reload
 def load_knowledge_from_json():
     """Load knowledge base from JSON file if exists"""
     kb_file = "knowledge_base/current_knowledge.json"
@@ -129,9 +130,15 @@ def load_knowledge_from_json():
     return None
 
 # Built-in Knowledge Base - Bank Indonesia Perwakilan Purwokerto
-# Try to load from JSON first, fallback to hardcoded
-_kb_from_json = load_knowledge_from_json()
-BUILTIN_KNOWLEDGE = _kb_from_json if _kb_from_json else """
+# Load dynamically (will refresh every 5 minutes or when cache expires)
+def get_builtin_knowledge():
+    """Get built-in knowledge, try JSON first, fallback to hardcoded"""
+    _kb_from_json = load_knowledge_from_json()
+    if _kb_from_json:
+        return _kb_from_json
+    
+    # Fallback hardcoded knowledge
+    return """
 INFORMASI BANK INDONESIA KANTOR PERWAKILAN PURWOKERTO
 
 ===============================================
@@ -358,7 +365,8 @@ if 'sidebar_open' not in st.session_state:
 # Functions
 def load_builtin_knowledge(model=None):
     """Load built-in knowledge base about BI Purwokerto"""
-    chunks = chunk_text(BUILTIN_KNOWLEDGE)
+    knowledge_text = get_builtin_knowledge()  # Get fresh knowledge (cache 5 min)
+    chunks = chunk_text(knowledge_text)
     docs = []
     for i, chunk in enumerate(chunks):
         docs.append({
