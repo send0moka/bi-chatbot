@@ -61,7 +61,9 @@ def load_knowledge_base():
     }
 
 def save_knowledge_base(kb_data, commit_message=""):
-    """Save knowledge base with versioning"""
+    """Save knowledge base with versioning and auto-commit to Git"""
+    import subprocess
+    
     # Generate version hash
     content_hash = hashlib.md5(json.dumps(kb_data, sort_keys=True).encode()).hexdigest()[:8]
     
@@ -101,6 +103,33 @@ def save_knowledge_base(kb_data, commit_message=""):
     
     with open(CURRENT_KB_FILE, 'w', encoding='utf-8') as f:
         json.dump(kb_data, f, indent=2, ensure_ascii=False)
+    
+    # Auto-commit to Git (if in Git repository)
+    try:
+        # Check if we're in a git repository
+        subprocess.run(['git', 'rev-parse', '--git-dir'], 
+                      capture_output=True, check=True, timeout=5)
+        
+        # Add files
+        subprocess.run(['git', 'add', 'knowledge_base/'], 
+                      capture_output=True, timeout=5)
+        
+        # Commit with message
+        git_commit_msg = f"chore(kb): {commit_message}" if commit_message else f"chore(kb): Update KB v{version_data['version']}"
+        subprocess.run(['git', 'commit', '-m', git_commit_msg], 
+                      capture_output=True, timeout=5)
+        
+        # Push to remote
+        subprocess.run(['git', 'push', 'origin', 'main'], 
+                      capture_output=True, timeout=30)
+        
+        st.success("✅ Changes saved and pushed to GitHub!")
+    except subprocess.TimeoutExpired:
+        st.warning("⚠️ Git push timeout - changes saved locally but not pushed to GitHub")
+    except subprocess.CalledProcessError:
+        st.info("ℹ️ Changes saved locally (Git auto-push not available in this environment)")
+    except Exception as e:
+        st.warning(f"⚠️ Changes saved locally, but Git push failed: {str(e)}")
     
     return version_data["version"]
 
