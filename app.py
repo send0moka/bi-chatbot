@@ -106,7 +106,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Load Knowledge Base from JSON if available
-@st.cache_data(ttl=300)  # Cache for 5 minutes, then reload
+@st.cache_data(ttl=5)  # Cache for 5 seconds for instant updates
 def load_knowledge_from_json():
     """Load knowledge base from JSON file if exists"""
     kb_file = "knowledge_base/current_knowledge.json"
